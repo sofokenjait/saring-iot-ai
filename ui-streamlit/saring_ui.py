@@ -14,7 +14,7 @@ device_label = "saring"
 def get_data():
     headers = {"X-Auth-Token": "BBUS-N7BD5c1zWnvSXahWY92pV7DJniZDtQ"}
     
-    url_kelembapan = f"https://industrial.api.ubidots.com/api/v1.6/devices/[device_label}/kelembapan/lv"
+    url_kelembapan = f"https://industrial.api.ubidots.com/api/v1.6/devices/{device_label}/kelembapan/lv"
     url_pompa = f"https://industrial.api.ubidots.com/api/v1.6/devices/{device_label}/pompa/lv"
     
     res_kelembapan = requests.get(url_kelembapan, headers=headers)
