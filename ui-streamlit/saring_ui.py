@@ -9,10 +9,11 @@ st.title("SARING - Smart Plant Watering System")
 
 # Get data from Ubidots
 UBIDOTS_TOKEN = "BBUS-N7BD5c1zWnvSXahWY92pV7DJniZDtQ"
-DEVICE = "saring"
+device_label = "saring"
+variable_label = "kelembapan"
 
 def get_data():
-    url = f"https://things.ubidots.com/api/v1.6/devices/{saring}/{kelembapan}/lv"
+    url = f"https://things.ubidots.com/api/v1.6/devices/saring/kelembapan/lv"
     headers = {"X-Auth-Token": UBIDOTS_TOKEN}
     res = requests.get(url, headers=headers)
     if res.status_code == 200:
