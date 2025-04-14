@@ -17,8 +17,8 @@ def get_data():
     res = requests.get(url, headers=headers)
     if res.status_code == 200:
         data = res.json()
-        kelembapan = data['kelembapan']['last_value']
-        pompa = data['pompa']['last_value']
+        kelembapan = data.get('kelembapan', {}).get('last_value', 'Data tidak tersedia')
+        pompa = data.get('pompa', {}).get('last_value', 'Data tidak tersedia')
         return kelembapan, pompa
     else:
         return None, None
