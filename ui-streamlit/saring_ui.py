@@ -14,6 +14,7 @@ variable_label = "kelembapan"
 
 def get_data():
     url = f"https://things.ubidots.com/api/v1.6/devices/saring/kelembapan/lv"
+    url = f"https://things.ubidots.com/api/v1.6/devices/saring/pompa/lv"
     headers = {"X-Auth-Token": UBIDOTS_TOKEN}
     res = requests.get(url, headers=headers)
     if res.status_code == 200:
