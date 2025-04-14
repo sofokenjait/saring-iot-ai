@@ -10,8 +10,6 @@ st.title("SARING - Smart Plant Watering System")
 # Get data from Ubidots
 UBIDOTS_TOKEN = "BBUS-N7BD5c1zWnvSXahWY92pV7DJniZDtQ"
 device_label = "saring"
-variable_label = "kelembapan"
-variable_label = "pompa"
 
 def get_data():
     headers = {"X-Auth-Token": BBUS-N7BD5c1zWnvSXahWY92pV7DJniZDtQ}
