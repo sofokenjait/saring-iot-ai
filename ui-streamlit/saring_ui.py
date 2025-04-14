@@ -12,7 +12,7 @@ UBIDOTS_TOKEN = "BBUS-N7BD5c1zWnvSXahWY92pV7DJniZDtQ"
 DEVICE = "saring"
 
 def get_data():
-    url = f"https://things.ubidots.com/api/v1.6/devices/{DEVICE_LABEL}/{VARIABLE_LABEL}/lv"
+    url = f"https://things.ubidots.com/api/v1.6/devices/{saring}/{kelembapan}/lv"
     headers = {"X-Auth-Token": UBIDOTS_TOKEN}
     res = requests.get(url, headers=headers)
     if res.status_code == 200:
