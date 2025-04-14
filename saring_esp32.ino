@@ -1,8 +1,8 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-const char* ssid = "Redmi 10 2022";
-const char* password = "23232323";
+const char* ssid = "R LAB FISIKA";
+const char* password = "l4b.f1s1k4";
 const char* TOKEN = "BBUS-N7BD5c1zWnvSXahWY92pV7DJniZDtQ"; // Token Ubidots kamu
 const char* DEVICE_LABEL = "saring";
 const char* VARIABLE_LABEL = "kelembapan";
