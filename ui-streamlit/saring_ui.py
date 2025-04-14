@@ -11,19 +11,21 @@ st.title("SARING - Smart Plant Watering System")
 UBIDOTS_TOKEN = "BBUS-N7BD5c1zWnvSXahWY92pV7DJniZDtQ"
 device_label = "saring"
 variable_label = "kelembapan"
+variable_label = "pompa"
 
 def get_data():
-    url = f"https://things.ubidots.com/api/v1.6/devices/saring/kelembapan/lv"
-    url = f"https://things.ubidots.com/api/v1.6/devices/saring/pompa/lv"
-    headers = {"X-Auth-Token": UBIDOTS_TOKEN}
-    res = requests.get(url, headers=headers)
-    if res.status_code == 200:
-        data = res.json()
-        kelembapan = data.get('kelembapan', {}).get('last_value', None)
-        pompa = data.get('pompa', {}).get('last_value', None)
-        return kelembapan, pompa
-    else:
-        return None, None
+    headers = {"X-Auth-Token": BBUS-N7BD5c1zWnvSXahWY92pV7DJniZDtQ}
+    
+    url_kelembapan = f"https://industrial.api.ubidots.com/api/v1.6/devices/{saring}/kelembapan/lv"
+    url_pompa = f"https://industrial.api.ubidots.com/api/v1.6/devices/{saring}/pompa/lv"
+    
+    res_kelembapan = requests.get(url_kelembapan, headers=headers)
+    res_pompa = requests.get(url_pompa, headers=headers)
+
+    kelembapan = res_kelembapan.text if res_kelembapan.status_code == 200 else None
+    pompa = res_pompa.text if res_pompa.status_code == 200 else None
+    
+    return kelembapan, pompa
 
 kelembapan, pompa = get_data()
 
