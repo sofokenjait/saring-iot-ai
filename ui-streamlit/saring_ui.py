@@ -17,19 +17,33 @@ def get_data():
     res = requests.get(url, headers=headers)
     if res.status_code == 200:
         data = res.json()
-        kelembapan = data.get('kelembapan', {}).get('last_value', 'Data tidak tersedia')
-        pompa = data.get('pompa', {}).get('last_value', 'Data tidak tersedia')
+        kelembapan = data.get('kelembapan', {}).get('last_value', None)
+        pompa = data.get('pompa', {}).get('last_value', None)
         return kelembapan, pompa
     else:
         return None, None
 
 kelembapan, pompa = get_data()
 
+# Tampilkan data jika berhasil didapat
 if kelembapan is not None:
-    st.metric("Kelembapan Tanah", f"{kelembapan:.2f}")
-    st.metric("Status Pompa", "Aktif" if pompa == 1 else "Mati")
+    try:
+        kelembapan = float(kelembapan)
+        st.metric("Kelembapan Tanah", f"{kelembapan:.2f}")
+    except ValueError:
+        st.metric("Kelembapan Tanah", "Data tidak valid")
 
-    # Simulasi prediksi AI sederhana (linear regression dummy)
+    # Cek status pompa
+    if pompa is not None:
+        try:
+            pompa = int(pompa)
+            st.metric("Status Pompa", "Aktif" if pompa == 1 else "Mati")
+        except ValueError:
+            st.metric("Status Pompa", "Data tidak valid")
+    else:
+        st.metric("Status Pompa", "Tidak tersedia")
+
+    # Simulasi prediksi AI sederhana
     data_x = np.array([0, 1, 2, 3, 4, 5, 6]).reshape(-1, 1)
     data_y = np.array([650, 600, 550, 500, 450, 400, 350])
     model = LinearRegression()
