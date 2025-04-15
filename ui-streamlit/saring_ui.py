@@ -38,7 +38,7 @@ if kelembapan is not None:
     # Cek status pompa
     if pompa is not None:
         try:
-            pompa = int(pompa)
+            pompa = int(pompa.strip())
             st.metric("Status Pompa", "Aktif" if pompa == 1 else "Mati")
         except ValueError:
             st.metric("Status Pompa", "Data tidak valid")
