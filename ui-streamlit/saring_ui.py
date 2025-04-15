@@ -26,6 +26,7 @@ def get_data():
     return kelembapan, pompa
 
 kelembapan, pompa = get_data()
+st.text(f"Data mentah pompa: '{pompa}'")
 
 # Tampilkan data jika berhasil didapat
 if kelembapan is not None:
