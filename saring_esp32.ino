@@ -57,7 +57,7 @@ void loop() {
   kelembapan = readSoil();
   Serial.print("Soil Moisture: "); Serial.println(kelembapan);
 
-  if (kelembapan < 2000) {
+  if (kelembapan < 3000) {
     digitalWrite(relayPin, HIGH);
     pumpOn = true;
   } else {
