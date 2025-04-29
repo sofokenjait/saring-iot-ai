@@ -95,12 +95,17 @@ void loop() {
     return;
   }
 
-  kelembapan = readSoil();
-  Serial.print("Soil Moisture: ");
+  int kelembapanRaw = readSoil();
+  Serial.print("Nilai Analog (ADC): ");
+  Serial.println(kelembapanRaw);  // UJI CEPAT: tampilkan nilai asli dari sensor
+
+  kelembapan = map(kelembapanRaw, 4095, 0, 0, 100); // konversi ke persen
+
+  Serial.print("Soil Moisture (%): ");
   Serial.println(kelembapan);
 
-  // Kontrol Pompa berdasarkan kelembapan
-  if (kelembapan < 3000) {
+  // Kontrol Pompa berdasarkan kelembapan (%)
+  if (kelembapan < 50) {  // nyalakan pompa jika kelembapan < 50%
     digitalWrite(relayPin, HIGH);
     pumpOn = true;
   } else {
@@ -112,11 +117,17 @@ void loop() {
   // Update OLED
   display.clearDisplay();
   display.setTextSize(1);
-  display.setCursor(0,0);
-  display.print("Moisture: ");
-  display.println(kelembapan);
+  display.setCursor(0, 0);
+  display.println("SARING");
+  display.setCursor(0, 10);
+  display.println("Smart Plant Watering");
 
-  display.setCursor(0, 20);
+  display.setCursor(0, 30);
+  display.print("Moisture: ");
+  display.print(kelembapan);
+  display.println(" %");
+
+  display.setCursor(0, 45);
   display.print("Pump: ");
   display.println(pumpOn ? "ON" : "OFF");
 
@@ -127,4 +138,5 @@ void loop() {
 
   delay(10000); // Delay 10 detik
 }
+
 
