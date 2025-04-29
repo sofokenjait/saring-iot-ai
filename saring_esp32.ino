@@ -111,7 +111,7 @@ void loop() {
 
   // Update OLED
   display.clearDisplay();
-  display.setTextSize(20);
+  display.setTextSize(1);
   display.setCursor(0,0);
   display.print("Moisture: ");
   display.println(kelembapan);
