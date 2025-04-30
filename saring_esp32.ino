@@ -138,5 +138,3 @@ void loop() {
 
   delay(10000); // Delay 10 detik
 }
-
-
