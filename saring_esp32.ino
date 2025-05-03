@@ -18,26 +18,28 @@ const int LED = 2;
 const int redPin = 18;
 const int yellowPin = 19;
 const int greenPin = 23;
+const int buzzerPin = 25; // buzzer pasif
 
 // OLED Setup
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
-#define OLED_RESET    -1
+#define OLED_RESET -1
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // Variabel
 int kelembapan = 0;
 bool pumpOn = false;
+bool lastPumpState = false;
 
 void setup() {
   Serial.begin(115200);
   Wire.begin(21, 22); // SDA = 21, SCL = 22
 
-  // OLED
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println("OLED GAGAL");
     while (1);
   }
+
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
@@ -46,14 +48,13 @@ void setup() {
   display.display();
   delay(1000);
 
-  // Pin
   pinMode(relayPin, OUTPUT);
   pinMode(LED, OUTPUT);
   pinMode(redPin, OUTPUT);
   pinMode(yellowPin, OUTPUT);
   pinMode(greenPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
 
-  // WiFi
   WiFi.begin(ssid, password);
   Serial.print("Menghubungkan ke WiFi");
   while (WiFi.status() != WL_CONNECTED) {
@@ -100,6 +101,12 @@ void sendToUbidots(int value, int status) {
   http.end();
 }
 
+void buzzerOn(int durationMs) {
+  tone(buzzerPin, 2000); // nada 2kHz
+  delay(durationMs);
+  noTone(buzzerPin);
+}
+
 void loop() {
   if (WiFi.status() != WL_CONNECTED) {
     WiFi.begin(ssid, password);
@@ -108,9 +115,9 @@ void loop() {
   }
 
   int kelembapanRaw = readSoil();
-  kelembapan = map(kelembapanRaw, 4095, 0, 0, 100);
+  kelembapan = map(kelembapanRaw, 4095, 0, 0, 100); // Semakin kering, nilai ADC tinggi → % rendah
 
-  Serial.print("Moisture: ");
+  Serial.print("Kelembapan: ");
   Serial.print(kelembapan);
   Serial.println(" %");
 
@@ -118,9 +125,24 @@ void loop() {
   if (kelembapan < 40) {
     digitalWrite(relayPin, HIGH);
     pumpOn = true;
-  } else {
+  } else if (kelembapan > 60) {
     digitalWrite(relayPin, LOW);
     pumpOn = false;
+  }
+
+  // === Buzzer saat pompa berubah ===
+  if (pumpOn != lastPumpState) {
+    if (pumpOn) {
+      Serial.println("Pompa ON - Buzzer 10 detik");
+      buzzerOn(10000);
+    } else {
+      Serial.println("Pompa OFF - Buzzer 4x1 detik");
+      for (int i = 0; i < 4; i++) {
+        buzzerOn(1000);
+        delay(300);
+      }
+    }
+    lastPumpState = pumpOn;
   }
 
   // === LED Indikator ===
@@ -128,7 +150,7 @@ void loop() {
     digitalWrite(redPin, HIGH);
     digitalWrite(yellowPin, LOW);
     digitalWrite(greenPin, LOW);
-  } else if (kelembapan >= 40 && kelembapan <= 60) {
+  } else if (kelembapan <= 60) {
     digitalWrite(redPin, LOW);
     digitalWrite(yellowPin, HIGH);
     digitalWrite(greenPin, LOW);
@@ -138,23 +160,23 @@ void loop() {
     digitalWrite(greenPin, HIGH);
   }
 
-  digitalWrite(LED, pumpOn ? HIGH : LOW); // LED onboard menandakan pompa aktif
+  digitalWrite(LED, pumpOn ? HIGH : LOW);
 
   // === OLED ===
   display.clearDisplay();
   display.setCursor(0, 0);
   display.println("SARING - MONITORING");
   display.setCursor(0, 15);
-  display.print("Moisture: ");
+  display.print("Kelembapan: ");
   display.print(kelembapan);
   display.println(" %");
   display.setCursor(0, 30);
-  display.print("Pump: ");
+  display.print("Pompa: ");
   display.println(pumpOn ? "ON" : "OFF");
   display.display();
 
   // === Kirim ke Ubidots ===
   sendToUbidots(kelembapan, pumpOn);
 
-  delay(10000); // delay 10 detik
+  delay(10000);
 }
